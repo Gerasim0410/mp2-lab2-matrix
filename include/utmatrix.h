@@ -1,4 +1,4 @@
-﻿// ННГУ, ВМК, Курс "Методы программирования-2", С++, ООП
+// ННГУ, ВМК, Курс "Методы программирования-2", С++, ООП
 //
 // utmatrix.h - Copyright (c) Гергель В.П. 07.05.2001
 //   Переработано для Microsoft Visual Studio 2008 Сысоевым А.В. (21.04.2015)
@@ -46,13 +46,19 @@ public:
 
 	// ввод-вывод
 	friend istream& operator>>(istream &in, TVector &v){
-		for (int i = 0; i < v.Size; i++)
+		for (int i = 0; i < v.Size; i++) {
 			in >> v.pVector[i];
+		}
 		return in;
 	}
 	friend ostream& operator<<(ostream &out, const TVector &v){
-		for (int i = 0; i < v.Size; i++)
-			out << v.pVector[i] << ' ';
+		out << "(";
+		for (int i = 0; i < v.Size; i++) {
+			out << v.pVector[i];
+			if (i < v.Size - 1)
+				out << ", ";
+		}
+		out << ")" << endl;
 		return out;
 	}
 };
@@ -60,10 +66,10 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si){
 	if ((s < 0) || (si < 0)){
-		throw "negative length";
+		throw -1;
 	}
 	if (s > MAX_VECTOR_SIZE) {
-		throw "large index";
+		throw -1;
 	}
 	Size = s;
 	StartIndex = si;
@@ -88,9 +94,9 @@ TVector<ValType>::~TVector(){
 template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos){
 	if ((pos > MAX_VECTOR_SIZE) || (pos - StartIndex > Size))
-		throw "large index";
+		throw -1;
 	if (pos - StartIndex < 0)
-		throw "negative length";
+		throw -1;
 	return pVector[pos - StartIndex];
 }  
 
@@ -155,7 +161,7 @@ TVector<ValType> TVector<ValType>::operator*(const ValType &val){
 template <class ValType> // сложение
 TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v){
 	if (Size != v.Size){
-		throw "different size";
+		throw - 1;
 	}
 	int i;
 	TVector Res(Size, StartIndex);
@@ -167,7 +173,7 @@ TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v){
 template <class ValType> // вычитание
 TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v){
 	if (Size != v.Size){
-		throw "different size";
+		throw -1;
 	}
 	int i;
 	TVector Res(Size, StartIndex);
@@ -179,7 +185,7 @@ TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v){
 template <class ValType> // скалярное произведение
 ValType TVector<ValType>::operator*(const TVector<ValType> &v){
 	if (Size != v.Size){
-		throw "different size";
+		throw - 1;
 	}
 	int i;
 	ValType a;
@@ -221,9 +227,9 @@ public:
 template <class ValType>
 TMatrix<ValType>::TMatrix(int s) : TVector<TVector<ValType> >(s){
 	if (s > MAX_MATRIX_SIZE)
-		throw "large index";
+		throw -1;
 	if (s < 0)
-		throw "negative length";
+		throw -1;
 	for (int i = 0; i < s; i++)
 		pVector[i] = TVector<ValType>(s - i, i);
 }
